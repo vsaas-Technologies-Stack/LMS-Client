@@ -9,7 +9,7 @@ export default defineConfig({
 
     host: true,
     port: 5173,
-    allowedHosts: ['noncrenated-kaye-healthfully.ngrok-free.dev'
+    allowedHosts: ['noncrenated-kaye-healthfully.ngrok-free.dev',"lms-server-r62y.onrender.com/"
     ],
     hmr: {
       overlay: false, // Disable error overlay
