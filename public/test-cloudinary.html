@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cloudinary Upload Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+    }
+    .preview {
+      margin-top: 1rem;
+      max-width: 300px;
+    }
+    .message {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Upload Image to Cloudinary</h2>
+  <form id="uploadForm">
+    <label for="image">Select Image:</label>
+    <input type="file" name="image" id="image" accept="image/*" required />
+    <br><br>
+    <button type="submit">Upload</button>
+  </form>
+
+  <img id="preview" class="preview" src="" alt="Image Preview" style="display:none;" />
+  <div id="message" class="message"></div>
+
+  <script>
+    const imageInput = document.getElementById('image');
+    const preview = document.getElementById('preview');
+    const message = document.getElementById('message');
+
+    imageInput.addEventListener('change', () => {
+      const file = imageInput.files[0];
+      if (file) {
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+    });
+
+    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      message.textContent = 'Uploading...';
+
+      const formData = new FormData();
+      formData.append('image', imageInput.files[0]);
+
+      try {
+        const response = await fetch('http://localhost:5000/api/test/cloudinary/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          message.textContent = '✅ Upload successful!';
+          const link = document.createElement('a');
+          link.href = result.url;
+          link.textContent = 'View Image';
+          link.target = '_blank';
+          message.appendChild(document.createElement('br'));
+          message.appendChild(link);
+        } else {
+          message.textContent = '❌ Upload failed: ' + result.message;
+        }
+      } catch (error) {
+        message.textContent = '❌ Error: ' + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
